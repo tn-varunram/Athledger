@@ -1,0 +1,2 @@
+#Build all services and push to docker
+docker-compose up --build
