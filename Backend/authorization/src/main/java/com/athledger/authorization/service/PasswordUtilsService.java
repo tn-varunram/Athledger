@@ -1,7 +1,9 @@
 package com.athledger.authorization.service;
 
 import com.athledger.authorization.dto.*;
+import com.athledger.authorization.impl.PasswordManager;
 import org.apache.coyote.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class PasswordUtilsService {
+
+    @Autowired
+    private PasswordManager passwordManager;
 
     @PostMapping("/forgot")
     public ResponseEntity<ForgotPasswordResponse> forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
