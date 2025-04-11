@@ -1,11 +1,8 @@
 package com.athledger.slotmgmt.impl;
 
 import com.athledger.slotmgmt.dto.GetSlotResponse;
-import com.athledger.slotmgmt.dto.Slot;
-import lombok.Getter;
+import com.athledger.slotmgmt.dto.SlotDetails;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
 
 @Component
 public class SlotManager {
@@ -23,7 +20,7 @@ public class SlotManager {
     }
 
     private GetSlotResponse getSlotsForTennis(){
-        Slot slot1 = Slot.builder()
+        SlotDetails slotDetails1 = SlotDetails.builder()
                 .slotId("slot1t")
                 .sfId("sc1c1")
                 .from("9:00AM")
@@ -35,7 +32,7 @@ public class SlotManager {
                 .sportId("tennis")
                 .build();
 
-        Slot slot2 = Slot.builder()
+        SlotDetails slotDetails2 = SlotDetails.builder()
                 .slotId("slot2t")
                 .sfId("sc1c1")
                 .from("10:00AM")
@@ -47,7 +44,7 @@ public class SlotManager {
                 .sportId("tennis")
                 .build();
 
-        Slot slot3 = Slot.builder()
+        SlotDetails slotDetails3 = SlotDetails.builder()
                 .slotId("slot3t")
                 .sfId("sc1c1")
                 .from("7:00PM")
@@ -58,12 +55,12 @@ public class SlotManager {
                 .sport("tennis")
                 .sportId("tennis")
                 .build();
-        Slot [] slotst = {slot1, slot2, slot3};
-        return GetSlotResponse.builder().slots(slotst).build();
+        SlotDetails[] slotst = {slotDetails1, slotDetails2, slotDetails3};
+        return GetSlotResponse.builder().slotDetails(slotst).build();
     }
 
     private GetSlotResponse getSlotsForFootball(){
-        Slot slot1 = Slot.builder()
+        SlotDetails slotDetails1 = SlotDetails.builder()
                 .slotId("slot1t")
                 .sfId("sc1c1")
                 .from("9:00AM")
@@ -75,7 +72,7 @@ public class SlotManager {
                 .sportId("Football")
                 .build();
 
-        Slot slot2 = Slot.builder()
+        SlotDetails slotDetails2 = SlotDetails.builder()
                 .slotId("slot2t")
                 .sfId("sc1c1")
                 .from("10:00AM")
@@ -87,7 +84,7 @@ public class SlotManager {
                 .sportId("Football")
                 .build();
 
-        Slot slot3 = Slot.builder()
+        SlotDetails slotDetails3 = SlotDetails.builder()
                 .slotId("slot3t")
                 .sfId("sc1c1")
                 .from("7:00PM")
@@ -98,12 +95,12 @@ public class SlotManager {
                 .sport("Football")
                 .sportId("Football")
                 .build();
-        Slot [] slots = {slot1, slot2, slot3};
-        return GetSlotResponse.builder().slots(slots).build();
+        SlotDetails[] slotDetails = {slotDetails1, slotDetails2, slotDetails3};
+        return GetSlotResponse.builder().slotDetails(slotDetails).build();
     }
 
     private GetSlotResponse getSlotsForBadminton(){
-        Slot [] slots = {};
-        return GetSlotResponse.builder().slots(slots).build();
+        SlotDetails[] slotDetails = {};
+        return GetSlotResponse.builder().slotDetails(slotDetails).build();
     }
 }

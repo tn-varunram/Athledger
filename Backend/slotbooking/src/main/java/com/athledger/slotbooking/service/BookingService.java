@@ -1,42 +1,66 @@
 package com.athledger.slotbooking.service;
 
-import com.athledger.slotbooking.dto.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+import com.athledger.slotbooking.dao.Booking;
+import com.athledger.slotbooking.dao.Slot;
+import com.athledger.slotbooking.dto.BookingStatus;
+import com.athledger.slotbooking.repo.BookingRepository;
+import com.athledger.slotbooking.repo.SlotRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@Transactional
 public class BookingService {
 
-    @PostMapping("/book")
-    public ResponseEntity<BookingResponse> book(@RequestBody BookingRequest bookingRequest) {
-        try{
+    @Autowired
+    private BookingRepository bookingRepository;
 
-        } catch(Exception e){
-            return ResponseEntity.status(500).body(BookingResponse.builder().build());
-        }
-        return ResponseEntity.ok(BookingResponse.builder().bookingId(bookingRequest.getBookingId()).build());
+    @Autowired
+    private SlotRepository slotRepository;
+
+    public Booking bookSlot(Booking booking) {
+        // Save booking
+        booking.setBookingid(UUID.randomUUID().toString());
+        booking.setBookingstatus(BookingStatus.BOOKED);
+        Booking saved = bookingRepository.save(booking);
+
+        // Remove slot from slots table
+        slotRepository.deleteBySlotid(
+                booking.getSlotid()
+        );
+
+        return saved;
     }
 
-    @PostMapping("/cancel")
-    public ResponseEntity<CancelResponse> cancel(@RequestBody CancelRequest cancelRequest) {
-        try{
+    public Booking cancelBooking(String bookingid) {
+        Booking booking = bookingRepository.findById(bookingid)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        } catch(Exception e){
-            return ResponseEntity.status(500).body(CancelResponse.builder().build());
-        }
-        return ResponseEntity.ok(CancelResponse.builder().build());
+        booking.setBookingstatus(BookingStatus.CANCELLED);
+        bookingRepository.save(booking);
+
+        // Reinsert slot
+        Slot newSlot = new Slot();
+        newSlot.setSlotid(UUID.randomUUID().toString());
+        newSlot.setSport(booking.getSport());
+        newSlot.setDate(booking.getBookingdate());
+        newSlot.setStart(booking.getBookingfrom());
+        newSlot.setEnd(booking.getBookingto());
+        newSlot.setFacility(booking.getFacility()); // or fetch if needed
+
+        slotRepository.save(newSlot);
+
+        return booking;
     }
 
-    @GetMapping("/booking/get")
-    public ResponseEntity<BookingResponse> getBooking(@RequestBody FetchBookingRequest fetchBookingRequest) {
-        try{
-
-        } catch(Exception e){
-            return ResponseEntity.status(500).body(BookingResponse.builder().build());
-        }
-        return ResponseEntity.ok(BookingResponse.builder().build());
+    public List<Booking> getBookingsByUser(String userid) {
+        return bookingRepository.findByUserid(userid);
     }
+
 }
+

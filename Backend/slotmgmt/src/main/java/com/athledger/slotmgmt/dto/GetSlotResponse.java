@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @Builder
 public class GetSlotResponse {
-    private Slot[] slots;
+    private SlotDetails[] slotDetails;
 }

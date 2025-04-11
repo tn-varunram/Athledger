@@ -1,28 +1,28 @@
 package com.athledger.authorization.service;
 
-import com.athledger.authorization.dao.UserDetails;
-import com.athledger.authorization.dto.RegistrationRequest;
-import com.athledger.authorization.dto.RegistrationResponse;
-import com.athledger.authorization.impl.UserManager;
+import com.athledger.authorization.repository.UserRepository;
+import com.athledger.authorization.dao.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.security.core.userdetails.*;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Service;
 
-@Controller
-public class UserService {
+import java.util.Collections;
 
-    /*@Autowired
-    private UserManager userManager;
+@Service
+public class UserService implements UserDetailsService{
+    @Autowired
+    private UserRepository repo;
 
-    @GetMapping("/users/get")
-    public ResponseEntity<Object> register(@RequestBody RegistrationRequest registrationRequest) {
-        try{
-            return ResponseEntity.status(200).body(userManager.getAllEntities());
-        } catch(Exception e){
-            return ResponseEntity.status(500).body(new RegistrationResponse());
-        }
-        //return ResponseEntity.ok(new RegistrationResponse());
-    }*/
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = repo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority(user.getRole()))
+        );
+    }
 }
