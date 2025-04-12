@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import createRequest from '../../api/request';
 
 const modalStyles = {
   backdrop: {
@@ -42,13 +43,27 @@ const RegisterModal = ({ onClose }) => {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    localStorage.setItem('athledgerUser', JSON.stringify(form));
-    alert(`Registered ${form.username}`);
-    onClose();
-  };
+
+    try {
+
+      const authRequest = createRequest('http://localhost:8083');
+      await authRequest.post('/auth/register', {
+        username: form.username,
+        email: form.email,
+        password: form.password,
+        dob: form.dob,
+        role: 'USER'
+      });
+
+      alert("Registered successfully!");
+      onClose();
+    } catch (err) {
+      alert("Registration failed: " + err.response?.data || err.message);
+    }
+    };
 
   return (
     <div style={modalStyles.backdrop}>

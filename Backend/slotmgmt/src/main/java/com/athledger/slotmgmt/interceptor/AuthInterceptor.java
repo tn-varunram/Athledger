@@ -17,6 +17,11 @@ public class AuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
 
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK); // ✅ let preflight through
+            return true;
+        }
+
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -34,13 +39,21 @@ public class AuthInterceptor implements HandlerInterceptor {
                     AUTH_SERVICE_URL, HttpMethod.GET, entity, Map.class);
 
             List<Map<String, String>> roles = (List<Map<String, String>>) res.getBody().get("roles");
-            boolean isAdmin = roles.stream()
-                    .anyMatch(role -> role.get("authority").equals("ADMIN"));
 
-            if (!isAdmin) {
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be an admin to access this");
+            boolean isUser = roles.stream().anyMatch(r -> r.get("authority").equals("USER"));
+            boolean isAdmin = roles.stream().anyMatch(r -> r.get("authority").equals("ADMIN"));
+
+            String path = request.getRequestURI();
+
+            if (path.startsWith("/admin") && !isAdmin) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Admins only");
                 return false;
             }
+            if (path.startsWith("/user") && !isUser) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Users only");
+                return false;
+            }
+
 
             return true;
 

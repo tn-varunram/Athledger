@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import createRequest from '../../api/request'; 
 const modalStyles = {
   backdrop: {
     position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
@@ -24,16 +24,36 @@ const modalStyles = {
   },
 };
 
-const LoginModal = ({ onClose }) => {
+const LoginModal = ({ onClose, onLogin }) => {
   const [email, setEmail] = useState('');
   const [pwd, setPwd] = useState('');
   const [showPwd, setShowPwd] = useState(false);
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Logged in as ${email}`);
-    onClose();
+
+    try {
+      const authRequest = createRequest('http://localhost:8083');
+
+      const res = await authRequest.post('/auth/login', { username : email, password: pwd });
+
+      const token = res.data.token;
+      localStorage.setItem('athledgerToken', token);
+    
+      // Set 1-hour expiration timeout
+      setTimeout(() => {
+        localStorage.removeItem('athledgerToken');
+      }, 3600 * 1000);
+
+      alert("Logged in!");
+      onLogin && onLogin(email); // or .username based on your JWT
+      onClose();
+    } catch (err) {
+      alert("Login failed: " + err.response?.data || err.message);
+    }
   };
+
 
   return (
     <div style={modalStyles.backdrop}>
@@ -41,7 +61,7 @@ const LoginModal = ({ onClose }) => {
         <h2>Login</h2>
         <input
           style={modalStyles.input}
-          type="email"
+          type="text"
           placeholder="Email"
           required
           value={email}

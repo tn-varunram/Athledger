@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+
 @RestController
 public class RegistrationService {
 
@@ -20,12 +22,13 @@ public class RegistrationService {
     UserManager userManager;
 
     @PostMapping("/auth/register")
-    public ResponseEntity<RegistrationResponse> register(@RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<?> register(@RequestBody RegistrationRequest registrationRequest) {
         try{
-            userManager.register(registrationRequest);
+           userManager.register(registrationRequest);
+            return ResponseEntity.ok(Collections.singletonMap("status", "User Successfuly created"));
         } catch(Exception e){
             return ResponseEntity.status(500).body(new RegistrationResponse());
         }
-        return ResponseEntity.ok(new RegistrationResponse());
+        //return ResponseEntity.ok(new RegistrationResponse());
     }
 }
