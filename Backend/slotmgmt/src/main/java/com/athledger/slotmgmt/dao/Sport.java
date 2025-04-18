@@ -12,14 +12,12 @@ import lombok.Setter;
 @Table(name = "sports")
 public class Sport {
 
-
+    @Id
     private String sportid;
 
     private String sport;
     private String facility;
     private int capacity;
-
-    @Id
     private String sfid;
 
     // Getters, Setters, Constructors

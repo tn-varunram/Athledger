@@ -4,6 +4,8 @@ import com.athledger.authorization.dao.User;
 import com.athledger.authorization.dto.LoginRequest;
 import com.athledger.authorization.dto.RegistrationRequest;
 import com.athledger.authorization.dto.UserDTO;
+import com.athledger.authorization.kafka.NotificationRequest;
+import com.athledger.authorization.kafka.UserEventProducer;
 import com.athledger.authorization.repository.UserRepository;
 import com.athledger.authorization.utils.JwtUtil;
 import org.slf4j.Logger;
@@ -15,7 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserManager {
@@ -30,6 +34,9 @@ public class UserManager {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private UserEventProducer userEventProducer;
 
     public List<User> getAllEntities() {
         return userRepository.findAll();
@@ -53,6 +60,18 @@ public class UserManager {
         user.setRole(request.getRole());
 
         userRepository.save(user);
+
+        // Create the Kafka message for the new user
+        NotificationRequest notification = new NotificationRequest(
+                user.getEmail(),   // Recipient's email
+                "Welcome to Athledger!",  // Subject
+                "Hi " + user.getUsername() + ", your account has been successfully created.",  // Body
+                user.getUsername()  // Username
+        );
+
+        // Send the Kafka message
+        userEventProducer.sendNewUserEvent(notification);
+
         return "User registered!";
     }
 
@@ -65,6 +84,9 @@ public class UserManager {
         }
 
         String token = jwtUtil.generateToken(user.getUsername());
-        return ResponseEntity.ok(Collections.singletonMap("token", token));
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        response.put("role", user.getRole());
+        return ResponseEntity.ok(response);
     }
 }

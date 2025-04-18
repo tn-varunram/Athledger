@@ -16,7 +16,7 @@ import java.util.Map;
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 
-    private final String AUTH_SERVICE_URL = "http://localhost:8083/auth/user"; // Update with real host
+    private final String AUTH_SERVICE_URL = "http://authorization:8083/auth/user"; // Update with real host
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)

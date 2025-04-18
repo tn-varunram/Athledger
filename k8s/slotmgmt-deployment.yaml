@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: slotmgmt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: slotmgmt
+  template:
+    metadata:
+      labels:
+        app: slotmgmt
+    spec:
+      containers:
+        - name: slotmgmt
+          image: varunram3/slotmgmt:latest  # ← update this!
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql:3306/athledger
+            - name: SPRING_DATASOURCE_USERNAME
+              value: athledgeruser
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: athledgerpass
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

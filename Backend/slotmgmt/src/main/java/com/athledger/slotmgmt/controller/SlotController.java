@@ -56,8 +56,13 @@ public class SlotController {
 
     @GetMapping("/slots")
     public ResponseEntity<List<Slot>> getSlotsByDate(@RequestParam("date") String dateStr) {
-        LocalDate date = LocalDate.parse(dateStr);
-        return ResponseEntity.ok(slotService.getSlotsByDate(date));
+        try {
+            LocalDate date = LocalDate.parse(dateStr);
+            return ResponseEntity.ok(slotService.getSlotsByDate(date));
+        } catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
     }
 
     @GetMapping("/slots/by-sport")

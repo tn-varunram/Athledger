@@ -32,10 +32,10 @@ Database changed
 mysql> show tables;
 Empty set (0.00 sec)
 
-mysql> create table user ( username varchar(100), userId varchar(100), email varchar(100), dob varchar(100));
+mysql> create table user ( username varchar(100), userid varchar(100), email varchar(100), dob varchar(100), password varchar(100), role varchar(100));
 Query OK, 0 rows affected (0.03 sec)
 
-mysql> create table ROLES (userId varchar(100), type varchar(100));
+mysql> create table roles (userId varchar(100), type varchar(100));
 Query OK, 0 rows affected (0.03 sec)
 
 mysql> create table SESSIONS (userId varchar(100), sessionId varchar(100), start varchar(100), end varchar(100));
@@ -50,7 +50,9 @@ Query OK, 0 rows affected (0.03 sec)
 mysql> create table SPORTSFACILITY(sport varchar(100), facility varchar(100), capacity int, center varchar(100), sfId varchar(100), sportId varchar(100));
 Query OK, 0 rows affected (0.04 sec)
 
-mysql> create table SLOTS(sportId varchar(100), slotId varchar(100), sfId varchar(100), start varchar(100), end varchar(100), date varchar(100));
+mysql> create table slotDetails(sportid varchar(100), slotid varchar(100), sfid varchar(100), start varchar(100), end varchar(100), date DATE);
 Query OK, 0 rows affected (0.03 sec)
 
-mysql>
+mysql>create table sports(sportid varchar(100), sport varchar(100), facility varchar(100), capacity int, sfid varchar(100))
+
+mysql> create table booking(bookingid varchar(100) primary key, bookingdate DATE, bookingfrom time, bookingto time, sport varchar(100), bookingstatus varchar(20), facility varchar(100))

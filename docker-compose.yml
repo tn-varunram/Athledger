@@ -27,6 +27,7 @@ services:
       - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   kafka:
     image: bitnami/kafka:latest
@@ -34,7 +35,7 @@ services:
     environment:
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
       - ALLOW_PLAINTEXT_LISTENER=yes
     ports:
       - "9092:9092"
@@ -56,7 +57,7 @@ services:
       - mysql
       - kafka
     ports:
-      - "8081:8081"
+      - "8083:8083"
 
   notification:
     build: ./backend/notification
@@ -65,7 +66,7 @@ services:
       - mysql
       - kafka
     ports:
-      - "8082:8082"
+      - "8084:8084"
 
   slotbooking:
     build: ./backend/slotbooking
@@ -74,7 +75,7 @@ services:
       - mysql
       - kafka
     ports:
-      - "8083:8083"
+      - "8082:8082"
 
   slotmgmt:
     build: ./backend/slotmgmt
@@ -83,7 +84,19 @@ services:
       - mysql
       - kafka
     ports:
-      - "8084:8084"
+      - "8081:8081"
+
+
+  frontend:
+    build: ./frontend/Athledger-UI
+    container_name: athledger-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - authorization
+      - slotmgmt
+      - slotbooking
+
 
 volumes:
   mysql-data:

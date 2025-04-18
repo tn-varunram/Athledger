@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lucidchart>
+  <diagram>
+    <!-- URMS -->
+    <shape id="URMS" type="rectangle" x="150" y="100" width="300" height="80" fill="#d9ead3" stroke="#6aa84f">User Authentication & Role Management Service (URMS)</shape>
+    
+    <!-- SMS -->
+    <shape id="SMS" type="rectangle" x="500" y="100" width="300" height="80" fill="#cfe2f3" stroke="#3d85c6">Slot Management Service (SMS)</shape>
+    
+    <!-- SBS -->
+    <shape id="SBS" type="rectangle" x="325" y="250" width="300" height="80" fill="#f9cb9c" stroke="#e69138">Slot Booking Service (SBS)</shape>
+    
+    <!-- NS -->
+    <shape id="NS" type="rectangle" x="325" y="400" width="300" height="80" fill="#ead1dc" stroke="#a64d79">Notification Service (NS)</shape>
+    
+    <!-- MySQL -->
+    <shape id="MySQL" type="ellipse" x="850" y="150" width="150" height="80" fill="#f3f3f3" stroke="#666666">MySQL Database</shape>
+    
+    <!-- UI -->
+    <shape id="UI" type="rectangle" x="50" y="250" width="200" height="80" fill="#fff2cc" stroke="#bf9000">User Interface (UI)</shape>
+    
+    <!-- Kafka -->
+    <shape id="Kafka" type="ellipse" x="700" y="300" width="200" height="80" fill="#d0e0e3" stroke="#134f5c">Kafka Event Bus</shape>
+    
+    <!-- Connections -->
+    <connection from="URMS" to="MySQL" />
+    <connection from="URMS" to="Kafka" />
+    <connection from="URMS" to="UI" />
+    <connection from="SMS" to="MySQL" />
+    <connection from="SMS" to="URMS" />
+    <connection from="SMS" to="Kafka" />
+    <connection from="SBS" to="MySQL" />
+    <connection from="SBS" to="URMS" />
+    <connection from="SBS" to="SMS" />
+    <connection from="SBS" to="Kafka" />
+    <connection from="SBS" to="UI" />
+    <connection from="SBS" to="NS" />
+    <connection from="NS" to="Kafka" />
+  </diagram>
+</lucidchart>
+

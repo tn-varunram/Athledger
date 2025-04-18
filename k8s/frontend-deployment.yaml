@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: athledger-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: athledger-frontend
+  template:
+    metadata:
+      labels:
+        app: athledger-frontend
+    spec:
+      containers:
+        - name: athledger-frontend
+          image: athledger-frontend:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80

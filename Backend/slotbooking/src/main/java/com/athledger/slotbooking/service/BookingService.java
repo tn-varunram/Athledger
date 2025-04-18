@@ -62,5 +62,9 @@ public class BookingService {
         return bookingRepository.findByUserid(userid);
     }
 
+    public List<Booking> getActiveBookings() {
+        return bookingRepository.findByBookingstatus(BookingStatus.BOOKED);
+    }
+
 }
 

@@ -19,12 +19,10 @@ public class BookingEventConsumer {
 
     @KafkaListener(topics = "booking-events", groupId = "notification-service-group")
     public void handleBookingEvent(String message) {
-        log.info("📥 Received booking event: {}", message);
 
-        String emailTo = "test@inbox.mailtrap.io"; // Can be anything, Mailtrap will catch it
+        String emailTo = "test@inbox.mailtrap.io";
         String subject = "Mailtrap Test Notification";
         String body = "Test email sent from Notification Service using Kafka.";
         emailService.sendEmail(emailTo, subject, body);
-        log.info("📧 Sending booking confirmation email for: {}", message);
     }
 }
